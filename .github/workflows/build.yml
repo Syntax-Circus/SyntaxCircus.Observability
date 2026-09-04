@@ -16,13 +16,13 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
-      - run: dotnet restore SyntaxCircus.AspNetCore.Serilog.slnx
-      - run: dotnet build SyntaxCircus.AspNetCore.Serilog.slnx --no-restore --configuration Release
-      - run: dotnet test --solution SyntaxCircus.AspNetCore.Serilog.slnx --no-build --configuration Release
+      - run: dotnet restore SyntaxCircus.Observability.slnx
+      - run: dotnet build SyntaxCircus.Observability.slnx --no-restore --configuration Release
+      - run: dotnet test --solution SyntaxCircus.Observability.slnx --no-build --configuration Release
 
       - name: Pack
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: dotnet pack SyntaxCircus.AspNetCore.Serilog.slnx --no-build --configuration Release --output artifacts
+        run: dotnet pack SyntaxCircus.Observability.slnx --no-build --configuration Release --output artifacts
 
       - name: Upload package artifact
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -68,7 +68,7 @@ jobs:
           fi
 
           package_name=$(basename "$package_path")
-          version=${package_name#SyntaxCircus.AspNetCore.Serilog.}
+          version=${package_name#SyntaxCircus.Observability.}
           version=${version%.nupkg}
           tag="v$version"
 

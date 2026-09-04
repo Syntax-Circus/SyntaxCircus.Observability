@@ -18,7 +18,7 @@ jobs:
           dotnet-version: 10.0.x
       - run: dotnet restore SyntaxCircus.Observability.slnx
       - run: dotnet build SyntaxCircus.Observability.slnx --no-restore --configuration Release
-      - run: dotnet test --solution SyntaxCircus.Observability.slnx --no-build --configuration Release
+      - run: dotnet test SyntaxCircus.Observability.slnx --no-build --configuration Release
 
       - name: Pack
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'

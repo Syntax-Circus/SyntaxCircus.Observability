@@ -44,4 +44,6 @@ Keep OTLP headers and Sentry DSNs in deployment secrets. Use the Sentry sampling
 
 ## License
 
+Deferred architecture proposal: [web-neutral observability](docs/enhancements/web-neutral-observability.md). No package split is implemented yet.
+
 MIT. See [LICENSE.txt](LICENSE.txt).

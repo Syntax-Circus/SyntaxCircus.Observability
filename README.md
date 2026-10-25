@@ -36,6 +36,17 @@ telemetry.LogStartupWarning(app.Logger);
 
 The registration also works with `HostApplicationBuilder` for OTLP traces, metrics, and Serilog logs. Sentry web capture is configured through `WebApplicationBuilder.WebHost` and is intentionally web-only in v1.
 
+## Blazor Server circuit-disposal noise (opt-in)
+
+Components that dispose JS modules in an `async void Dispose()` (for example Blazor-ApexCharts) leave an unobserved `JSDisconnectedException` when a circuit drops. It is harmless but is reported as an error. Opt in to ignore it:
+
+```csharp
+DisconnectedCircuitNoiseFilter.AddTo(sentry);            // inside UseSentry(...); drops matching Sentry events
+DisconnectedCircuitNoiseFilter.Register(app.Logger);     // after Build(); observes the task, logs at Debug
+```
+
+Only exceptions made up entirely of `JSDisconnectedException` are affected.
+
 ## Configuration
 
 The package reads standard `OpenTelemetry` and `Sentry` sections. Telemetry is disabled by default and an enabled but invalid OTLP endpoint produces a safe warning without exporting data. Sentry remains disabled until a DSN is supplied; it sends error-level events only, disables default PII collection, and has a trace sample rate of `0.0` by default.

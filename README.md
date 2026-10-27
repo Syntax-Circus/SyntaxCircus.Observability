@@ -47,6 +47,17 @@ DisconnectedCircuitNoiseFilter.Register(app.Logger);     // after Build(); obser
 
 Only exceptions made up entirely of `JSDisconnectedException` are affected.
 
+## Broker-unreachable noise (opt-in)
+
+While a message broker is down, its client (for example RabbitMQ.Client's dual-stack connect) can leave faulted tasks nobody observes. The bus keeps retrying, but Sentry reports each stray task as a `fatal` `AggregateException`. Opt in to ignore them:
+
+```csharp
+BrokerUnreachableNoiseFilter.AddTo(sentry);            // inside UseSentry(...); drops matching Sentry events
+BrokerUnreachableNoiseFilter.Register(app.Logger);     // after Build(); observes the task, logs at Warning
+```
+
+Only an `AggregateException` made up entirely of broker connection failures (`SocketException`, RabbitMQ `BrokerUnreachableException`/`ConnectFailureException`, MassTransit `RabbitMqConnectionException`) is affected; the package takes no broker dependency. Keep a readiness check on the broker to catch a real outage.
+
 ## Configuration
 
 The package reads standard `OpenTelemetry` and `Sentry` sections. Telemetry is disabled by default and an enabled but invalid OTLP endpoint produces a safe warning without exporting data. Sentry remains disabled until a DSN is supplied; it sends error-level events only, disables default PII collection, and has a trace sample rate of `0.0` by default.
